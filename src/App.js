@@ -3,11 +3,12 @@ import React from 'react';
 class Demo extends React.Component {
   state = {
     min: 400,
+    minDistance: 2,
     perKm: 100,
     waitCost: 50,
     coords: {
       lat: null,
-      lng: null,
+      lon: null,
     },
     distance: 0,
   };
@@ -24,11 +25,10 @@ class Demo extends React.Component {
     };
 
     navigator.geolocation.getCurrentPosition(data => {
-      console.log('data.coords.latitude', data.coords.latitude);
       this.setState({
         coords: {
           lat: data.coords.latitude,
-          lng: data.coords.longitude,
+          lon: data.coords.longitude,
         }
       })
     },this.onFailure, options);
@@ -39,13 +39,11 @@ class Demo extends React.Component {
   onSuccess = (data) => {
     const { coords } = this.state;
 
-    console.log('data', data);
-
-    this.calcDistance(coords.lat, data.coords.latitude, coords.lng, data.coords.longitude);
+    this.calcDistance(coords.lat, data.coords.latitude, coords.lon, data.coords.longitude);
   };
 
   onFailure = (err) => {
-    console.log('fail', err);
+    alert('Error occurred in getting position process');
   };
 
   calcDistance = (lat1, lat2, lon1, lon2) => {
@@ -67,18 +65,42 @@ class Demo extends React.Component {
       dist = dist * 60 * 1.1515 * 1.609344;
       return this.setState(prevState => ({
         distance: prevState.distance + dist,
+        coords: {
+          lat: lat2,
+          lon: lon2,
+        },
       }))
     }
+  };
+
+  calcPrice = () => {
+    const {
+      distance,
+      min,
+      perKm,
+      minDistance,
+    } = this.state;
+
+    if (distance > minDistance) {
+      return min + (perKm * (distance - minDistance))
+    }
+    return min;
   };
 
   render() {
     const { distance } = this.state;
 
     return (
-      <div>{ distance }</div>
+      <React.Fragment>
+        <div>
+          distance - { distance }
+        </div>
+        <div>
+          price - { this.calcPrice() }
+        </div>
+      </React.Fragment>
     )
   }
 }
 
 export default Demo;
-
