@@ -43,11 +43,11 @@ class Demo extends React.Component {
   };
 
   onFailure = (err) => {
+    console.error('Error occurred in getting position process', err);
     alert('Error occurred in getting position process');
   };
 
   calcDistance = (lat1, lat2, lon1, lon2) => {
-    console.log('lat1', lat1);
     if ((lat1 === lat2) && (lon1 === lon2)) {
       return 0;
     }
