@@ -1,4 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import Container from '@material-ui/core/Container';
+import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = () => ({
+  textField: {
+
+  },
+});
 
 class Demo extends React.Component {
   state = {
@@ -87,20 +99,72 @@ class Demo extends React.Component {
     return min;
   };
 
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
+  };
+
   render() {
-    const { distance } = this.state;
+    const {
+      distance,
+      minDistance,
+      min,
+      perKm,
+    } = this.state;
+    const { classes } = this.props;
 
     return (
-      <React.Fragment>
-        <div>
-          distance - { distance }
-        </div>
-        <div>
-          price - { this.calcPrice() }
-        </div>
-      </React.Fragment>
+      <Container maxWidth="sm">
+        <Grid
+          container
+          direction="column"
+          justify="flex-start"
+          alignItems="flex-start"
+        >
+          <TextField
+            id="outlined-name"
+            label="Մինիմալ"
+            className={classes.textField}
+            value={min}
+            onChange={this.handleChange('min')}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="outlined-name"
+            label="Ներառված կիլոմետրաժ"
+            className={classes.textField}
+            value={minDistance}
+            onChange={this.handleChange('minDistance')}
+            margin="normal"
+            variant="outlined"
+          />
+          <TextField
+            id="outlined-name"
+            label="1կմ֊ի արժեքը"
+            className={classes.textField}
+            value={perKm}
+            onChange={this.handleChange('preKm')}
+            margin="normal"
+            variant="outlined"
+          />
+        </Grid>
+        <Typography
+          gutterBottom
+        >
+          Անցած ճանապարհ - { distance }
+        </Typography>
+        <Typography>
+          Գին - { this.calcPrice() }
+        </Typography>
+      </Container>
     )
   }
 }
 
-export default Demo;
+Demo.propTypes = {
+  classes: PropTypes.shape({}).isRequired,
+};
+
+export default withStyles(styles)(Demo);
