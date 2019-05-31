@@ -6,11 +6,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
-const styles = () => ({
-  textField: {
-
-  },
-});
+const styles = () => ({});
 
 class Demo extends React.Component {
   state = {
@@ -31,7 +27,7 @@ class Demo extends React.Component {
 
   trackGPS = () => {
     const options = {
-      enableHighAccuracy: false,
+      enableHighAccuracy: true,
       timeout: 10000,
       maximumAge: 0
     };
@@ -75,6 +71,9 @@ class Demo extends React.Component {
       dist = Math.acos(dist);
       dist = dist * 180/Math.PI;
       dist = dist * 60 * 1.1515 * 1.609344;
+      if (dist < 0.03) {
+        return null;
+      }
       return this.setState(prevState => ({
         distance: prevState.distance + dist,
         coords: {
@@ -94,7 +93,7 @@ class Demo extends React.Component {
     } = this.state;
 
     if (distance > minDistance) {
-      return min + (perKm * (distance - minDistance))
+      return min + (perKm * Math.floor(distance - minDistance))
     }
     return min;
   };
@@ -112,7 +111,6 @@ class Demo extends React.Component {
       min,
       perKm,
     } = this.state;
-    const { classes } = this.props;
 
     return (
       <Container maxWidth="sm">
@@ -125,7 +123,6 @@ class Demo extends React.Component {
           <TextField
             id="outlined-name"
             label="Մինիմալ"
-            className={classes.textField}
             value={min}
             onChange={this.handleChange('min')}
             margin="normal"
@@ -134,7 +131,6 @@ class Demo extends React.Component {
           <TextField
             id="outlined-name"
             label="Ներառված կիլոմետրաժ"
-            className={classes.textField}
             value={minDistance}
             onChange={this.handleChange('minDistance')}
             margin="normal"
@@ -143,7 +139,6 @@ class Demo extends React.Component {
           <TextField
             id="outlined-name"
             label="1կմ֊ի արժեքը"
-            className={classes.textField}
             value={perKm}
             onChange={this.handleChange('preKm')}
             margin="normal"
@@ -153,7 +148,7 @@ class Demo extends React.Component {
         <Typography
           gutterBottom
         >
-          Անցած ճանապարհ - { distance }
+          Անցած ճանապարհ - { Number(distance.toFixed(2)) }
         </Typography>
         <Typography>
           Գին - { this.calcPrice() }
