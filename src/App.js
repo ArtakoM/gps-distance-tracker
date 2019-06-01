@@ -11,14 +11,14 @@ const styles = () => ({});
 class Demo extends React.Component {
   state = {
     min: 400,
-    minDistance: 2,
+    minDistance: 4,
     perKm: 100,
     waitCost: 50,
     coords: {
       lat: null,
       lon: null,
     },
-    distance: 0,
+    distance: 4.2,
   };
 
   componentDidMount() {
@@ -93,7 +93,7 @@ class Demo extends React.Component {
     } = this.state;
 
     if (distance > minDistance) {
-      return min + (perKm * Math.floor(distance - minDistance))
+      return Number(min) + Number(perKm * Math.floor(distance - minDistance + 1))
     }
     return min;
   };
