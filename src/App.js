@@ -18,7 +18,7 @@ class Demo extends React.Component {
       lat: null,
       lon: null,
     },
-    distance: 4.2,
+    distance: 0,
   };
 
   componentDidMount() {
