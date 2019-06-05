@@ -18,9 +18,7 @@ class Demo extends React.Component {
     minDistance: 4,
     perKm: 100,
     waitCost: 50,
-    start: moment().format(),
     rangeStart: null,
-    range: 0,
     coords: {
       lat: null,
       lon: null,
@@ -68,18 +66,11 @@ class Demo extends React.Component {
     }
     else {
       const { rangeStart } = this.state;
+      const now = moment().format();
       let range = 100;
 
       if ( rangeStart !== null) {
-        const now = moment().format();
         range = moment.range(rangeStart, now).diff('seconds');
-
-        console.log('range', range);
-
-        this.setState({
-          rangeStart: now,
-          range,
-        })
       } else {
         this.setState({
           rangeStart: moment().format(),
@@ -105,6 +96,7 @@ class Demo extends React.Component {
       }
       return this.setState(prevState => ({
         distance: prevState.distance + dist,
+        rangeStart: now,
         coords: {
           lat: lat2,
           lon: lon2,
@@ -139,8 +131,6 @@ class Demo extends React.Component {
       minDistance,
       min,
       perKm,
-      start,
-      range,
     } = this.state;
 
     return (
@@ -183,12 +173,6 @@ class Demo extends React.Component {
         </Typography>
         <Typography>
           Գին - { this.calcPrice() }
-        </Typography>
-        <Typography>
-          Սկիզբ - { start }
-        </Typography>
-        <Typography>
-          Range - { range }
         </Typography>
       </Container>
     )
