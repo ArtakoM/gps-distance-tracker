@@ -1,10 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Moment from 'moment';
+import { extendMoment } from 'moment-range';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+
+const moment = extendMoment(Moment);
 
 const styles = () => ({});
 
@@ -14,6 +18,9 @@ class Demo extends React.Component {
     minDistance: 4,
     perKm: 100,
     waitCost: 50,
+    start: moment().format(),
+    rangeStart: null,
+    range: 0,
     coords: {
       lat: null,
       lon: null,
@@ -60,6 +67,25 @@ class Demo extends React.Component {
       return 0;
     }
     else {
+      const { rangeStart } = this.state;
+      let range = 100;
+
+      if ( rangeStart !== null) {
+        const now = moment().format();
+        range = moment.range(rangeStart, now).diff('seconds');
+
+        console.log('range', range);
+
+        this.setState({
+          rangeStart: now,
+          range,
+        })
+      } else {
+        this.setState({
+          rangeStart: moment().format(),
+        })
+      }
+
       const radlat1 = Math.PI * lat1/180;
       const radlat2 = Math.PI * lat2/180;
       const theta = lon1-lon2;
@@ -71,7 +97,10 @@ class Demo extends React.Component {
       dist = Math.acos(dist);
       dist = dist * 180/Math.PI;
       dist = dist * 60 * 1.1515 * 1.609344;
-      if (dist < 0.03) {
+
+      const speed = (dist*1000)/range;
+
+      if (dist < 0.03 || speed > 35) {
         return null;
       }
       return this.setState(prevState => ({
@@ -110,6 +139,8 @@ class Demo extends React.Component {
       minDistance,
       min,
       perKm,
+      start,
+      range,
     } = this.state;
 
     return (
@@ -152,6 +183,12 @@ class Demo extends React.Component {
         </Typography>
         <Typography>
           Գին - { this.calcPrice() }
+        </Typography>
+        <Typography>
+          Սկիզբ - { start }
+        </Typography>
+        <Typography>
+          Range - { range }
         </Typography>
       </Container>
     )
